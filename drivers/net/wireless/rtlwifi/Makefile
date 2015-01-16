@@ -1,0 +1,28 @@
+#obj-$(CONFIG_RTLWIFI) 		+= rtlwifi.o
+obj-m 		+= rtlwifi.o
+rtlwifi-objs	:=		\
+		base.o		\
+		cam.o		\
+		core.o		\
+		debug.o		\
+		efuse.o		\
+		ps.o		\
+		rc.o		\
+		regd.o
+
+rtl8192c_common-objs +=		\
+
+ifneq ($(CONFIG_PCI),)
+rtlwifi-objs	+= pci.o
+endif
+
+ifneq ($(CONFIG_USB),)
+rtlwifi-objs	+= usb.o
+endif
+
+obj-$(CONFIG_RTL8192C_COMMON)	+= rtl8192c/
+obj-$(CONFIG_RTL8192CE)		+= rtl8192ce/
+obj-m		+= rtl8192cu/
+obj-$(CONFIG_RTL8192SE)		+= rtl8192se/
+
+ccflags-y += -D__CHECK_ENDIAN__
