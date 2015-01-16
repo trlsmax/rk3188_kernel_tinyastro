@@ -1,0 +1,30 @@
+#!/bin/bash
+
+THREADS="9"
+
+# Linaro gcc 4.8.2
+#TOOLCHAIN=arm-linux-gnueabihf-
+
+
+# gcc version 4.6.x-google 20120106 (prerelease)
+TOOLCHAIN=./rktools/toolchain/linaro/bin/arm-linux-gnueabihf-
+
+if [ "$1" != "0" ]; then
+    mv .config config_bak
+    make mrproper
+    rm -rf ./mod
+    mv config_bak .config
+fi
+
+echo -e "\n========================================="
+echo -e " Building kernel for ${DEVICE} with ${THREADS} thread(s)"
+echo -e "=========================================\n"
+
+ARCH=arm CROSS_COMPILE=$TOOLCHAIN make -j$THREADS 
+# kernel.img
+
+./rktools/rkcrc -k ./arch/arm/boot/zImage ./kernel.img
+
+if [ "$2" != "0" ]; then
+    ARCH=arm CROSS_COMPILE=$TOOLCHAIN INSTALL_MOD_PATH=mod make modules_install
+fi
